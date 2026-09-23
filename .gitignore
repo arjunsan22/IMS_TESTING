@@ -9,5 +9,8 @@ node_modules/
 
 # Environment Variables
 .env
+.env.*
+!.env.example
+
 # Custom JSON Reports
 /jsonReports/

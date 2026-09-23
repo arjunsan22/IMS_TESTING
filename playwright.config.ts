@@ -6,7 +6,26 @@ import { defineConfig, devices } from '@playwright/test';
  */
 import dotenv from 'dotenv';
 import path from 'path';
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+
+
+
+// Which project did we run?
+// ------------------------------------
+
+const projectArg = process.argv.find(arg => arg.startsWith('--project='));
+
+const projectName = projectArg ? projectArg.split('=')[1] : 'dev';
+
+// ------------------------------------
+// Select corresponding .env file
+// ------------------------------------
+
+const envFile = `.env.${projectName}`;
+
+dotenv.config({
+    path: path.resolve(__dirname, envFile)
+});
+
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -43,43 +62,95 @@ export default defineConfig({
     video:"on",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    
     trace: 'on-first-retry',
+
+  // selected .env file-il ninnu BASE_URL varum
+    baseURL: process.env.BASE_URL,  //environment URL configuration
+
+    //why this baseURL in the use{} ?,-> so we can only write this in tests. 
+//     await page.goto("/login");
+
+// Playwright knows:
+
+ // baseURL + /login
+
   },
 
   /* Configure projects for major browsers */
+
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
+
+        {
+            name: 'dev',
+            use: {
+                ...devices['Desktop Chrome'], //this line is -> browser/device configuration
+
+                // baseURL: process.env.BASE_URL, 
+                //Ithum possible aanu: its also correct step
+                //but read line before the closing of this project array
+            },
+        },
+
+        // {
+        //     name: 'qa',
+        //     use: {
+        //         ...devices['Desktop Chrome'],
+        //     },
+        // },
+
+        // {
+        //     name: 'staging',
+        //     use: {
+        //         ...devices['Desktop Chrome'], 
+        //     },
+        // },
+
+        // But note: ivide moonu project-ilum same -> process.env.BASE_URL thanne aanu.
+        //  .env.dev / .env.qa / .env.staging already selected according to command.
+//         So:
+
+              // npx playwright test --project=dev
+
+              // → process.env.BASE_URL = DEV
+
+              // npx playwright test --project=qa
+
+              // → process.env.BASE_URL = QA
+
+              // and so on.
+    ],
 
 
+//     projects:
 
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
+// projects: [
+//     { name: "dev" },
+//     { name: "qa" },
+//     { name: "staging" }
+// ]
 
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
-  ],
+//this tells to playwright, the environment names 
 
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+// but:
+
+// dev → .env.dev
+// qa → .env.qa
+// staging → .env.staging
+
+// എന്ന connection നാം മുകളിൽ ഈ code കൊണ്ടാണ് ഉണ്ടാക്കിയത്:
+// const projectArg = process.argv.find(
+//     arg => arg.startsWith('--project=')
+// );
+
+// const projectName = projectArg
+//     ? projectArg.split('=')[1]
+//     : 'dev';
+
+// const envFile = `.env.${projectName}`;
+
+// dotenv.config({
+//     path: path.resolve(__dirname, envFile)
+// });
+
 });
