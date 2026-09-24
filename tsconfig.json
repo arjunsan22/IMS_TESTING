@@ -7,11 +7,12 @@
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["node"]
+    "types": ["node", "playwright"]
   },
   "include": [
     "playwright.config.ts",
     "tests/**/*",
-    "pages/**/*"
+    "pages/**/*",
+    "fixtures/**/*"
   ]
 }
