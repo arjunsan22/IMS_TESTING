@@ -34,7 +34,7 @@ export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
 
-  testMatch:['tests/admin/users/createUsers.test.ts'],
+  testMatch:['tests/admin/departments/editDepartment.test.ts'],
 
 
   fullyParallel: true,
